@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@prisma/client": "^7.4.2",
+    "@vercel/kv": "^3.0.0",
     "better-sqlite3": "^12.6.2",
     "next": "^15.0.0",
     "prisma": "^7.4.2",

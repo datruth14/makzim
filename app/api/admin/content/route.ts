@@ -1,10 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getAdminContent, updateAdminContent } from '@/app/lib/sqlite';
+import { getAdminContent, updateAdminContent } from '@/app/lib/kv-storage';
 
 export async function GET() {
   try {
-    const content = getAdminContent();
-    console.log('Fetched admin content:', content);
+    const content = await getAdminContent();
+    console.log('Fetched admin content from KV:', content);
     return NextResponse.json(content);
   } catch (error) {
     console.error('Error fetching admin content:', error);
@@ -21,9 +21,9 @@ export async function GET() {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    console.log('Updating admin content:', body);
+    console.log('Updating admin content in KV:', body);
     
-    const content = updateAdminContent({
+    const content = await updateAdminContent({
       heroTitle: body.heroTitle,
       heroDescription: body.heroDescription,
       profileName: body.profileName,
