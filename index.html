@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maksim Travels | Book Your Journey with Expert Guidance</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Poppins', sans-serif; }
+        .hidden { display: none; }
+        .hero-gradient {
+            background: linear-gradient(135deg, #1d4ed8 0%, #1e40af 100%);
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-900">
+
+    <header class="bg-white shadow-sm py-4 sticky top-0 z-50">
+        <div class="container mx-auto px-6 flex justify-between items-center">
+            <h1 class="text-2xl font-bold text-blue-700">Maksim Travels</h1>
+            <a href="tel:07069085676" class="text-sm font-semibold text-blue-700 hover:text-blue-800 transition">📞 07069085676</a>
+        </div>
+    </header>
+
+    <section class="hero-gradient text-white py-20 px-6">
+        <div class="container mx-auto text-center">
+            <h2 class="text-4xl md:text-5xl font-extrabold mb-4 leading-tight">I Will Connect You to the World</h2>
+            <p class="text-lg text-blue-100 max-w-2xl mx-auto mb-8">Expert assistance for international tickets, local flights, hotel reservations, and seamless visa processing.</p>
+        </div>
+    </section>
+
+    <section class="container mx-auto px-6 -mt-16 mb-24">
+        <div class="bg-white rounded-3xl shadow-2xl overflow-hidden border border-slate-100">
+            <div class="grid md:grid-cols-12 items-center">
+                
+                <div class="md:col-span-5 bg-slate-100 p-10 flex flex-col items-center text-center h-full border-r border-slate-200">
+                    <img src="maksim-travels-founder.jpg" alt="Maksim Travels Founder" class="w-48 h-48 rounded-full object-cover shadow-xl border-4 border-white mb-6">
+                    <h3 class="text-xl font-bold text-gray-800">Your Dedicated Travel Partner</h3>
+                    <p class="text-gray-600 mt-2 text-sm">"Call us for a swift response. I am committed to making your global travel dreams a reality."</p>
+                    <a href="tel:07069085676" class="mt-6 inline-flex items-center gap-2 bg-blue-100 text-blue-800 px-5 py-2 rounded-full font-semibold hover:bg-blue-200 transition">
+                        <span>📞</span> Call Direct: 07069085676
+                    </a>
+                </div>
+
+                <div class="md:col-span-7 p-10 md:p-14">
+                    <h3 class="text-2xl font-bold mb-8 text-gray-800 border-b pb-4">Request Your Personal Quote</h3>
+                    <form id="travelForm" class="space-y-6">
+                        
+                        <div>
+                            <label class="block text-sm font-semibold mb-2 text-gray-700">What service do you need?</label>
+                            <select id="service" required onchange="toggleFields()" class="w-full p-4 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition bg-white">
+                                <option value="">Select service...</option>
+                                <option value="International Ticket">International Ticket</option>
+                                <option value="Local Ticket">Local Ticket</option>
+                                <option value="Hotels">Hotels</option>
+                                <option value="Visas">Visas</option>
+                                <option value="Holiday Packages">Holiday Packages</option>
+                                <option value="Consulting">Consulting</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-semibold mb-2 text-gray-700">Where are you travelling to?</label>
+                            <input type="text" id="destination" placeholder="City or Country" class="w-full p-4 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-blue-500 transition">
+                        </div>
+
+                        <div id="dateFields" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-semibold mb-2 text-gray-700">Travel Date</label>
+                                <input type="date" id="travelDate" class="w-full p-4 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-blue-500 transition">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-semibold mb-2 text-gray-700">Return Date</label>
+                                <input type="date" id="returnDate" class="w-full p-4 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-blue-500 transition">
+                            </div>
+                        </div>
+
+                        <div id="visaField" class="hidden">
+                            <label class="block text-sm font-semibold mb-2 text-gray-700">What type of visa do you want?</label>
+                            <input type="text" id="visaType" placeholder="e.g. Tourist, Business, Student" class="w-full p-4 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-blue-500 transition">
+                        </div>
+
+                        <div id="hotelFields" class="hidden grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-semibold mb-2 text-gray-700">Check-In Date</label>
+                                <input type="date" id="checkIn" class="w-full p-4 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-blue-500 transition">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-semibold mb-2 text-gray-700">Check-Out Date</label>
+                                <input type="date" id="checkOut" class="w-full p-4 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-blue-500 transition">
+                            </div>
+                        </div>
+
+                        <button type="submit" class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-4 rounded-xl transition duration-300 transform hover:scale-[1.02] flex justify-center items-center gap-2 shadow-lg">
+                            Get Swift Response on WhatsApp
+                        </button>
+                    </form>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <footer class="bg-slate-900 text-slate-300 py-10 mt-16">
+        <div class="container mx-auto px-6 text-center text-sm">
+            <p class="font-bold text-white mb-2">Maksim Travels</p>
+            <p>I Will Connect You to the World</p>
+            <p class="mt-4 opacity-70">© 2024 Maksim Travels. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        function toggleFields() {
+            const service = document.getElementById('service').value;
+            const visaField = document.getElementById('visaField');
+            const hotelFields = document.getElementById('hotelFields');
+            const dateFields = document.getElementById('dateFields');
+
+            // Reset visibility
+            visaField.classList.add('hidden');
+            hotelFields.classList.add('hidden');
+            dateFields.classList.remove('hidden');
+
+            if (service === 'Visas') {
+                visaField.classList.remove('hidden');
+                dateFields.classList.add('hidden');
+            } else if (service === 'Hotels') {
+                hotelFields.classList.remove('hidden');
+                dateFields.classList.add('hidden');
+            }
+        }
+
+        document.getElementById('travelForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Number from the provided video content
+            const phoneNumber = "2347069085676";
+            
+            const service = document.getElementById('service').value;
+            const destination = document.getElementById('destination').value;
+            const travelDate = document.getElementById('travelDate').value;
+            const returnDate = document.getElementById('returnDate').value;
+            const visaType = document.getElementById('visaType').value;
+            const checkIn = document.getElementById('checkIn').value;
+            const checkOut = document.getElementById('checkOut').value;
+
+            let message = `*New Inquiry for Maksim Travels*%0A`;
+            message += `*Service:* ${service}%0A`;
+            message += `*Destination:* ${destination}%0A`;
+
+            if (service === 'Visas') {
+                message += `*Visa Type:* ${visaType}%0A`;
+            } else if (service === 'Hotels') {
+                message += `*Check-in:* ${checkIn}%0A`;
+                message += `*Check-out:* ${checkOut}%0A`;
+            } else {
+                message += `*Travel Date:* ${travelDate}%0A`;
+                message += `*Return Date:* ${returnDate}%0A`;
+            }
+
+            // Optional: Include the source number in the message format for clarity
+            message += `%0A(Requesting swift response via phone number in video: 07069085676)%0A`;
+
+            window.open(`https://wa.me/${phoneNumber}?text=${message}`, '_blank');
+        });
+    </script>
+</body>
+</html>
