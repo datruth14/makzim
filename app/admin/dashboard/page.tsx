@@ -2,6 +2,8 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
+import Image from 'next/image';
 import { isAdminLoggedIn, setAdminLoggedIn } from '@/app/lib/adminData';
 
 interface AdminContent {
@@ -110,9 +112,9 @@ export default function AdminDashboard() {
         <div className="container mx-auto px-6 flex justify-between items-center">
           <h1 className="text-2xl font-bold text-blue-700">Maksim Travels Admin</h1>
           <div className="flex items-center gap-4">
-            <a href="/" className="text-blue-600 hover:text-blue-700 font-semibold transition">
+            <Link href="/" className="text-blue-600 hover:text-blue-700 font-semibold transition">
               ← Home
-            </a>
+            </Link>
             <button
               onClick={handleLogout}
               className="bg-red-600 hover:bg-red-700 text-white font-semibold px-6 py-2 rounded-lg transition"
@@ -226,6 +228,7 @@ export default function AdminDashboard() {
                       src={content.profileImage}
                       alt="Profile"
                       className="w-48 h-48 rounded-full object-cover mb-4 border-4 border-white shadow-lg"
+                      suppressHydrationWarning
                     />
                   ) : content.profileImage ? (
                     <div className="text-6xl mb-4">{content.profileImage}</div>

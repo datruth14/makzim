@@ -14,7 +14,11 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
-        <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet" />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap"
+          rel="stylesheet"
+          suppressHydrationWarning
+        />
       </head>
       <body className="bg-slate-50 text-slate-900" style={{ fontFamily: "'Poppins', sans-serif" }}>
         {children}

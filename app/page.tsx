@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import Image from 'next/image';
 
 export default function Home() {
   const [service, setService] = useState('');
@@ -105,6 +106,7 @@ export default function Home() {
                   src={adminContent.profileImage}
                   alt="Profile"
                   className="w-48 h-48 rounded-full object-cover shadow-xl border-4 border-white mb-6"
+                  suppressHydrationWarning
                 />
               ) : (
                 <div className="w-48 h-48 rounded-full object-cover shadow-xl border-4 border-white mb-6 bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center text-5xl">
