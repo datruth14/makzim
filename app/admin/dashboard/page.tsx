@@ -6,11 +6,16 @@ import Link from 'next/link';
 import { isAdminLoggedIn, setAdminLoggedIn } from '@/app/lib/adminData';
 
 interface AdminContent {
+  headerTitle: string;
+  headerPhone: string;
   heroTitle: string;
   heroDescription: string;
   profileName: string;
   profileBio: string;
   profileImage: string;
+  footerTitle: string;
+  footerDescription: string;
+  footerCopyright: string;
 }
 
 export default function AdminDashboard() {
@@ -39,11 +44,16 @@ export default function AdminDashboard() {
       }
       const data = await response.json();
       setContent({
+        headerTitle: data.headerTitle,
+        headerPhone: data.headerPhone,
         heroTitle: data.heroTitle,
         heroDescription: data.heroDescription,
         profileName: data.profileName,
         profileBio: data.profileBio,
         profileImage: data.profileImage,
+        footerTitle: data.footerTitle,
+        footerDescription: data.footerDescription,
+        footerCopyright: data.footerCopyright,
       });
     } catch (err) {
       const errorMsg = err instanceof Error ? err.message : 'Failed to load content';
@@ -144,6 +154,35 @@ export default function AdminDashboard() {
             <h2 className="text-2xl font-bold mb-8 text-gray-800">Edit Website Content</h2>
 
             <div className="space-y-8">
+              {/* Header Section */}
+              <div className="border-b pb-8">
+                <h3 className="text-xl font-bold mb-6 text-gray-800">Header Section</h3>
+
+                <div className="space-y-4">
+                  <div>
+                    <label className="block text-sm font-semibold mb-2 text-gray-700">Header Title</label>
+                    <input
+                      type="text"
+                      value={content.headerTitle}
+                      onChange={(e) => setContent({ ...content, headerTitle: e.target.value })}
+                      className="w-full p-4 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition"
+                      placeholder="Enter header title"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-semibold mb-2 text-gray-700">Header Phone</label>
+                    <input
+                      type="text"
+                      value={content.headerPhone}
+                      onChange={(e) => setContent({ ...content, headerPhone: e.target.value })}
+                      className="w-full p-4 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition"
+                      placeholder="Enter phone number"
+                    />
+                  </div>
+                </div>
+              </div>
+
               {/* Hero Section */}
               <div className="border-b pb-8">
                 <h3 className="text-xl font-bold mb-6 text-gray-800">Hero Section</h3>
@@ -209,6 +248,46 @@ export default function AdminDashboard() {
                       className="w-full p-4 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition"
                     />
                     <p className="text-xs text-gray-500 mt-2">Upload a JPG, PNG, or WebP image (max 5MB)</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Footer Section */}
+              <div className="border-b pb-8">
+                <h3 className="text-xl font-bold mb-6 text-gray-800">Footer Section</h3>
+
+                <div className="space-y-4">
+                  <div>
+                    <label className="block text-sm font-semibold mb-2 text-gray-700">Footer Title</label>
+                    <input
+                      type="text"
+                      value={content.footerTitle}
+                      onChange={(e) => setContent({ ...content, footerTitle: e.target.value })}
+                      className="w-full p-4 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition"
+                      placeholder="Enter footer title"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-semibold mb-2 text-gray-700">Footer Description</label>
+                    <input
+                      type="text"
+                      value={content.footerDescription}
+                      onChange={(e) => setContent({ ...content, footerDescription: e.target.value })}
+                      className="w-full p-4 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition"
+                      placeholder="Enter footer description"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-semibold mb-2 text-gray-700">Footer Copyright</label>
+                    <input
+                      type="text"
+                      value={content.footerCopyright}
+                      onChange={(e) => setContent({ ...content, footerCopyright: e.target.value })}
+                      className="w-full p-4 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition"
+                      placeholder="Enter copyright text"
+                    />
                   </div>
                 </div>
               </div>

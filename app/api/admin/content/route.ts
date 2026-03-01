@@ -30,11 +30,16 @@ export async function POST(request: NextRequest) {
     console.log('Updating admin content in Turso:', body);
     
     const content = await updateAdminContent({
+      headerTitle: body.headerTitle,
+      headerPhone: body.headerPhone,
       heroTitle: body.heroTitle,
       heroDescription: body.heroDescription,
       profileName: body.profileName,
       profileBio: body.profileBio,
       profileImage: body.profileImage,
+      footerTitle: body.footerTitle,
+      footerDescription: body.footerDescription,
+      footerCopyright: body.footerCopyright,
     });
     
     console.log('Updated admin content:', content);

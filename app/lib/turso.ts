@@ -3,21 +3,31 @@ import { getAdminContentFromStorage, saveAdminContentToStorage } from './storage
 
 export interface AdminContent {
   id: number;
+  headerTitle: string;
+  headerPhone: string;
   heroTitle: string;
   heroDescription: string;
   profileName: string;
   profileBio: string;
   profileImage: string;
+  footerTitle: string;
+  footerDescription: string;
+  footerCopyright: string;
   createdAt: string;
   updatedAt: string;
 }
 
 const DEFAULT_CONTENT: Omit<AdminContent, 'id' | 'createdAt' | 'updatedAt'> = {
+  headerTitle: 'Maksim Travels',
+  headerPhone: '07069085676',
   heroTitle: 'I Will Connect You to the World',
   heroDescription: 'Expert assistance for international tickets, local flights, hotel reservations, and seamless visa processing.',
   profileName: 'Your Dedicated Travel Partner',
   profileBio: '"Call us for a swift response. I am committed to making your global travel dreams a reality."',
   profileImage: '👤',
+  footerTitle: 'Maksim Travels',
+  footerDescription: 'I Will Connect You to the World',
+  footerCopyright: `© ${new Date().getFullYear()} Maksim Travels. All rights reserved.`,
 };
 
 let db: Client | null = null;
@@ -57,11 +67,16 @@ export async function initializeTursoDatabase() {
     await client.execute(`
       CREATE TABLE IF NOT EXISTS admin_content (
         id INTEGER PRIMARY KEY,
+        headerTitle TEXT NOT NULL,
+        headerPhone TEXT NOT NULL,
         heroTitle TEXT NOT NULL,
         heroDescription TEXT NOT NULL,
         profileName TEXT NOT NULL,
         profileBio TEXT NOT NULL,
         profileImage TEXT NOT NULL,
+        footerTitle TEXT NOT NULL,
+        footerDescription TEXT NOT NULL,
+        footerCopyright TEXT NOT NULL,
         createdAt TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
         updatedAt TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
       );
@@ -73,9 +88,8 @@ export async function initializeTursoDatabase() {
 
     if (count === 0) {
       await client.execute(
-        `INSERT INTO admin_content (id, heroTitle, heroDescription, profileName, profileBio, profileImage)
-         VALUES (?, ?, ?, ?, ?, ?)`,
-        [1, DEFAULT_CONTENT.heroTitle, DEFAULT_CONTENT.heroDescription, DEFAULT_CONTENT.profileName, DEFAULT_CONTENT.profileBio, DEFAULT_CONTENT.profileImage]
+        `INSERT INTO admin_content (id, headerTitle, headerPhone, heroTitle, heroDescription, profileName, profileBio, profileImage, footerTitle, footerDescription, footerCopyright)
+         VALUES (1, '${DEFAULT_CONTENT.headerTitle}', '${DEFAULT_CONTENT.headerPhone}', '${DEFAULT_CONTENT.heroTitle}', '${DEFAULT_CONTENT.heroDescription}', '${DEFAULT_CONTENT.profileName}', '${DEFAULT_CONTENT.profileBio}', '${DEFAULT_CONTENT.profileImage}', '${DEFAULT_CONTENT.footerTitle}', '${DEFAULT_CONTENT.footerDescription}', '${DEFAULT_CONTENT.footerCopyright}')`
       );
       console.log('Default admin content inserted');
     }
@@ -96,11 +110,16 @@ export async function getAdminContent(): Promise<AdminContent> {
       console.log('Fetched admin content from Turso');
       return {
         id: row.id || 1,
+        headerTitle: row.headerTitle,
+        headerPhone: row.headerPhone,
         heroTitle: row.heroTitle,
         heroDescription: row.heroDescription,
         profileName: row.profileName,
         profileBio: row.profileBio,
         profileImage: row.profileImage,
+        footerTitle: row.footerTitle,
+        footerDescription: row.footerDescription,
+        footerCopyright: row.footerCopyright,
         createdAt: row.createdAt,
         updatedAt: row.updatedAt,
       };
@@ -129,9 +148,8 @@ export async function updateAdminContent(
     const client = getTursoClient();
     await client.execute(
       `UPDATE admin_content 
-       SET heroTitle = ?, heroDescription = ?, profileName = ?, profileBio = ?, profileImage = ?, updatedAt = CURRENT_TIMESTAMP
-       WHERE id = 1`,
-      [data.heroTitle, data.heroDescription, data.profileName, data.profileBio, data.profileImage]
+       SET headerTitle = '${data.headerTitle}', headerPhone = '${data.headerPhone}', heroTitle = '${data.heroTitle}', heroDescription = '${data.heroDescription}', profileName = '${data.profileName}', profileBio = '${data.profileBio}', profileImage = '${data.profileImage}', footerTitle = '${data.footerTitle}', footerDescription = '${data.footerDescription}', footerCopyright = '${data.footerCopyright}', updatedAt = CURRENT_TIMESTAMP
+       WHERE id = 1`
     );
     console.log('Admin content updated in Turso');
   } catch (tursoError) {

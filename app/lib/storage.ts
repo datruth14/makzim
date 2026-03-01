@@ -3,21 +3,31 @@ import path from 'path';
 
 export interface AdminContent {
   id: number;
+  headerTitle: string;
+  headerPhone: string;
   heroTitle: string;
   heroDescription: string;
   profileName: string;
   profileBio: string;
   profileImage: string;
+  footerTitle: string;
+  footerDescription: string;
+  footerCopyright: string;
   createdAt: string;
   updatedAt: string;
 }
 
 const DEFAULT_CONTENT: Omit<AdminContent, 'id' | 'createdAt' | 'updatedAt'> = {
+  headerTitle: 'Maksim Travels',
+  headerPhone: '07069085676',
   heroTitle: 'I Will Connect You to the World',
   heroDescription: 'Expert assistance for international tickets, local flights, hotel reservations, and seamless visa processing.',
   profileName: 'Your Dedicated Travel Partner',
   profileBio: '"Call us for a swift response. I am committed to making your global travel dreams a reality."',
   profileImage: '👤',
+  footerTitle: 'Maksim Travels',
+  footerDescription: 'I Will Connect You to the World',
+  footerCopyright: `© ${new Date().getFullYear()} Maksim Travels. All rights reserved.`,
 };
 
 function getStoragePath(): string {

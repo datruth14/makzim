@@ -70,10 +70,10 @@ export default function Home() {
       {/* Header */}
       <header className="bg-white shadow-sm py-4 sticky top-0 z-50">
         <div className="container mx-auto px-6 flex justify-between items-center">
-          <h1 className="text-2xl font-bold text-blue-700">Maksim Travels</h1>
+          <h1 className="text-2xl font-bold text-blue-700">{adminContent?.headerTitle || 'Maksim Travels'}</h1>
           <div className="flex items-center gap-4">
-            <a href="tel:07069085676" className="text-sm font-semibold text-blue-700 hover:text-blue-800 transition">
-              📞 07069085676
+            <a href={`tel:${adminContent?.headerPhone || '07069085676'}`} className="text-sm font-semibold text-blue-700 hover:text-blue-800 transition">
+              📞 {adminContent?.headerPhone || '07069085676'}
             </a>
             <a href="/admin" className="text-xs font-semibold text-gray-600 hover:text-blue-700 transition">
               Admin
@@ -259,9 +259,9 @@ export default function Home() {
       {/* Footer */}
       <footer className="bg-slate-900 text-slate-300 py-10 mt-16">
         <div className="container mx-auto px-6 text-center text-sm">
-          <p className="font-bold text-white mb-2">Maksim Travels</p>
-          <p>I Will Connect You to the World</p>
-          <p className="mt-4 opacity-70">© 2024 Maksim Travels. All rights reserved.</p>
+          <p className="font-bold text-white mb-2">{adminContent?.footerTitle || 'Maksim Travels'}</p>
+          <p>{adminContent?.footerDescription || 'I Will Connect You to the World'}</p>
+          <p className="mt-4 opacity-70">{adminContent?.footerCopyright || `© ${new Date().getFullYear()} Maksim Travels. All rights reserved.`}</p>
         </div>
       </footer>
     </>
