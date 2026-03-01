@@ -5,6 +5,7 @@ export interface AdminContent {
   id: number;
   headerTitle: string;
   headerPhone: string;
+  whatsappNumber: string;
   heroTitle: string;
   heroDescription: string;
   profileName: string;
@@ -20,6 +21,7 @@ export interface AdminContent {
 const DEFAULT_CONTENT: Omit<AdminContent, 'id' | 'createdAt' | 'updatedAt'> = {
   headerTitle: 'Maksim Travels',
   headerPhone: '07069085676',
+  whatsappNumber: '2347069085676',
   heroTitle: 'I Will Connect You to the World',
   heroDescription: 'Expert assistance for international tickets, local flights, hotel reservations, and seamless visa processing.',
   profileName: 'Your Dedicated Travel Partner',
@@ -69,6 +71,7 @@ export async function initializeTursoDatabase() {
         id INTEGER PRIMARY KEY,
         headerTitle TEXT NOT NULL,
         headerPhone TEXT NOT NULL,
+        whatsappNumber TEXT NOT NULL,
         heroTitle TEXT NOT NULL,
         heroDescription TEXT NOT NULL,
         profileName TEXT NOT NULL,
@@ -88,8 +91,8 @@ export async function initializeTursoDatabase() {
 
     if (count === 0) {
       await client.execute(
-        `INSERT INTO admin_content (id, headerTitle, headerPhone, heroTitle, heroDescription, profileName, profileBio, profileImage, footerTitle, footerDescription, footerCopyright)
-         VALUES (1, '${DEFAULT_CONTENT.headerTitle}', '${DEFAULT_CONTENT.headerPhone}', '${DEFAULT_CONTENT.heroTitle}', '${DEFAULT_CONTENT.heroDescription}', '${DEFAULT_CONTENT.profileName}', '${DEFAULT_CONTENT.profileBio}', '${DEFAULT_CONTENT.profileImage}', '${DEFAULT_CONTENT.footerTitle}', '${DEFAULT_CONTENT.footerDescription}', '${DEFAULT_CONTENT.footerCopyright}')`
+        `INSERT INTO admin_content (id, headerTitle, headerPhone, whatsappNumber, heroTitle, heroDescription, profileName, profileBio, profileImage, footerTitle, footerDescription, footerCopyright)
+         VALUES (1, '${DEFAULT_CONTENT.headerTitle}', '${DEFAULT_CONTENT.headerPhone}', '${DEFAULT_CONTENT.whatsappNumber}', '${DEFAULT_CONTENT.heroTitle}', '${DEFAULT_CONTENT.heroDescription}', '${DEFAULT_CONTENT.profileName}', '${DEFAULT_CONTENT.profileBio}', '${DEFAULT_CONTENT.profileImage}', '${DEFAULT_CONTENT.footerTitle}', '${DEFAULT_CONTENT.footerDescription}', '${DEFAULT_CONTENT.footerCopyright}')`
       );
       console.log('Default admin content inserted');
     }
@@ -112,6 +115,7 @@ export async function getAdminContent(): Promise<AdminContent> {
         id: row.id || 1,
         headerTitle: row.headerTitle,
         headerPhone: row.headerPhone,
+        whatsappNumber: row.whatsappNumber,
         heroTitle: row.heroTitle,
         heroDescription: row.heroDescription,
         profileName: row.profileName,
@@ -148,7 +152,7 @@ export async function updateAdminContent(
     const client = getTursoClient();
     await client.execute(
       `UPDATE admin_content 
-       SET headerTitle = '${data.headerTitle}', headerPhone = '${data.headerPhone}', heroTitle = '${data.heroTitle}', heroDescription = '${data.heroDescription}', profileName = '${data.profileName}', profileBio = '${data.profileBio}', profileImage = '${data.profileImage}', footerTitle = '${data.footerTitle}', footerDescription = '${data.footerDescription}', footerCopyright = '${data.footerCopyright}', updatedAt = CURRENT_TIMESTAMP
+       SET headerTitle = '${data.headerTitle}', headerPhone = '${data.headerPhone}', whatsappNumber = '${data.whatsappNumber}', heroTitle = '${data.heroTitle}', heroDescription = '${data.heroDescription}', profileName = '${data.profileName}', profileBio = '${data.profileBio}', profileImage = '${data.profileImage}', footerTitle = '${data.footerTitle}', footerDescription = '${data.footerDescription}', footerCopyright = '${data.footerCopyright}', updatedAt = CURRENT_TIMESTAMP
        WHERE id = 1`
     );
     console.log('Admin content updated in Turso');

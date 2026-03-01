@@ -8,6 +8,7 @@ import { isAdminLoggedIn, setAdminLoggedIn } from '@/app/lib/adminData';
 interface AdminContent {
   headerTitle: string;
   headerPhone: string;
+  whatsappNumber: string;
   heroTitle: string;
   heroDescription: string;
   profileName: string;
@@ -46,6 +47,7 @@ export default function AdminDashboard() {
       setContent({
         headerTitle: data.headerTitle,
         headerPhone: data.headerPhone,
+        whatsappNumber: data.whatsappNumber,
         heroTitle: data.heroTitle,
         heroDescription: data.heroDescription,
         profileName: data.profileName,
@@ -178,6 +180,17 @@ export default function AdminDashboard() {
                       onChange={(e) => setContent({ ...content, headerPhone: e.target.value })}
                       className="w-full p-4 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition"
                       placeholder="Enter phone number"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-semibold mb-2 text-gray-700">WhatsApp Number</label>
+                    <input
+                      type="text"
+                      value={content.whatsappNumber}
+                      onChange={(e) => setContent({ ...content, whatsappNumber: e.target.value })}
+                      className="w-full p-4 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition"
+                      placeholder="Enter WhatsApp number (e.g., 2347069085676)"
                     />
                   </div>
                 </div>

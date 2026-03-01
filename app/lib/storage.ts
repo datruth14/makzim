@@ -5,6 +5,7 @@ export interface AdminContent {
   id: number;
   headerTitle: string;
   headerPhone: string;
+  whatsappNumber: string;
   heroTitle: string;
   heroDescription: string;
   profileName: string;
@@ -20,6 +21,7 @@ export interface AdminContent {
 const DEFAULT_CONTENT: Omit<AdminContent, 'id' | 'createdAt' | 'updatedAt'> = {
   headerTitle: 'Maksim Travels',
   headerPhone: '07069085676',
+  whatsappNumber: '2347069085676',
   heroTitle: 'I Will Connect You to the World',
   heroDescription: 'Expert assistance for international tickets, local flights, hotel reservations, and seamless visa processing.',
   profileName: 'Your Dedicated Travel Partner',

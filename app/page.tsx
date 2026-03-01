@@ -39,7 +39,7 @@ export default function Home() {
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    const phoneNumber = "2347069085676";
+    const phoneNumber = adminContent?.whatsappNumber || "2347069085676";
 
     let message = `*New Inquiry for Maksim Travels*%0A`;
     message += `*Service:* ${service}%0A`;

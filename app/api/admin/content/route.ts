@@ -32,6 +32,7 @@ export async function POST(request: NextRequest) {
     const content = await updateAdminContent({
       headerTitle: body.headerTitle,
       headerPhone: body.headerPhone,
+      whatsappNumber: body.whatsappNumber,
       heroTitle: body.heroTitle,
       heroDescription: body.heroDescription,
       profileName: body.profileName,
