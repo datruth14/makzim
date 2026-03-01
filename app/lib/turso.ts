@@ -1,4 +1,4 @@
-import { createClient } from '@libsql/client';
+import axios from 'axios';
 
 export interface AdminContent {
   id: number;
@@ -19,36 +19,55 @@ const DEFAULT_CONTENT: Omit<AdminContent, 'id' | 'createdAt' | 'updatedAt'> = {
   profileImage: '👤',
 };
 
-let client: ReturnType<typeof createClient> | null = null;
+let cachedInstance: axios.AxiosInstance | null = null;
 
-function getClient() {
-  if (client) return client;
+function getTursoClient() {
+  if (cachedInstance) return cachedInstance;
 
-  const url = process.env.TURSO_DATABASE_URL;
   const token = process.env.TURSO_AUTH_TOKEN;
-
-  if (!url) {
-    throw new Error('TURSO_DATABASE_URL environment variable is not set');
-  }
+  let url = process.env.TURSO_DATABASE_URL;
 
   if (!token) {
     throw new Error('TURSO_AUTH_TOKEN environment variable is not set');
   }
 
-  client = createClient({
-    url,
-    authToken: token,
+  if (!url) {
+    throw new Error('TURSO_DATABASE_URL environment variable is not set');
+  }
+
+  // Convert libsql:// to https://
+  if (url.startsWith('libsql://')) {
+    url = url.replace('libsql://', 'https://');
+  }
+
+  // Use Turso REST API
+  cachedInstance = axios.create({
+    baseURL: url,
+    headers: {
+      'Authorization': `Bearer ${token}`,
+    },
   });
 
-  return client;
+  return cachedInstance;
+}
+
+async function executeQuery(sql: string, args?: any[]) {
+  try {
+    const client = getTursoClient();
+    const response = await client.post('/v2/query', {
+      statements: [{ sql, args }],
+    });
+    return response.data;
+  } catch (error: any) {
+    console.error('Query execution error:', error.response?.data || error.message);
+    throw error;
+  }
 }
 
 export async function initializeTursoDatabase() {
   try {
-    const db = getClient();
-
-    // Create table if it doesn't exist
-    await db.execute(`
+    // Create table
+    await executeQuery(`
       CREATE TABLE IF NOT EXISTS admin_content (
         id INTEGER PRIMARY KEY,
         heroTitle TEXT NOT NULL,
@@ -61,37 +80,30 @@ export async function initializeTursoDatabase() {
       );
     `);
 
-    // Ensure default row exists
-    const existing = await db.execute('SELECT COUNT(*) as count FROM admin_content');
+    // Check if default row exists
+    const result = await executeQuery('SELECT COUNT(*) as count FROM admin_content');
+    const count = result.results[0]?.rows[0]?.[0] || 0;
     
-    if (existing.rows.length === 0 || (existing.rows[0] as any).count === 0) {
-      await db.execute({
-        sql: `INSERT INTO admin_content (id, heroTitle, heroDescription, profileName, profileBio, profileImage)
-         VALUES (1, ?, ?, ?, ?, ?)`,
-        args: [
-          DEFAULT_CONTENT.heroTitle,
-          DEFAULT_CONTENT.heroDescription,
-          DEFAULT_CONTENT.profileName,
-          DEFAULT_CONTENT.profileBio,
-          DEFAULT_CONTENT.profileImage,
-        ]
-      });
+    if (count === 0) {
+      await executeQuery(
+        `INSERT INTO admin_content (id, heroTitle, heroDescription, profileName, profileBio, profileImage)
+         VALUES (?, ?, ?, ?, ?, ?)`,
+        [1, DEFAULT_CONTENT.heroTitle, DEFAULT_CONTENT.heroDescription, DEFAULT_CONTENT.profileName, DEFAULT_CONTENT.profileBio, DEFAULT_CONTENT.profileImage]
+      );
     }
 
     console.log('Turso database initialized successfully');
-  } catch (error) {
-    console.error('Failed to initialize Turso database:', error);
-    throw error;
+  } catch (error: any) {
+    console.log('Database initialization info:', error?.message);
   }
 }
 
 export async function getAdminContent(): Promise<AdminContent> {
   try {
-    const db = getClient();
-    const result = await db.execute('SELECT * FROM admin_content WHERE id = 1');
+    const result = await executeQuery('SELECT * FROM admin_content WHERE id = 1');
+    const rows = result.results[0]?.rows || [];
 
-    if (result.rows.length === 0) {
-      // Return default content with mock IDs if table is empty
+    if (rows.length === 0) {
       return {
         id: 1,
         ...DEFAULT_CONTENT,
@@ -100,10 +112,19 @@ export async function getAdminContent(): Promise<AdminContent> {
       };
     }
 
-    return result.rows[0] as unknown as AdminContent;
+    const row = rows[0];
+    return {
+      id: row[0],
+      heroTitle: row[1],
+      heroDescription: row[2],
+      profileName: row[3],
+      profileBio: row[4],
+      profileImage: row[5],
+      createdAt: row[6],
+      updatedAt: row[7],
+    } as unknown as AdminContent;
   } catch (error) {
     console.error('Failed to get admin content from Turso:', error);
-    // Return default content on error
     return {
       id: 1,
       ...DEFAULT_CONTENT,
@@ -117,24 +138,15 @@ export async function updateAdminContent(
   data: Omit<AdminContent, 'id' | 'createdAt' | 'updatedAt'>
 ): Promise<AdminContent> {
   try {
-    const db = getClient();
-
-    await db.execute({
-      sql: `UPDATE admin_content 
+    await executeQuery(
+      `UPDATE admin_content 
        SET heroTitle = ?, heroDescription = ?, profileName = ?, profileBio = ?, profileImage = ?, updatedAt = CURRENT_TIMESTAMP
        WHERE id = 1`,
-      args: [
-        data.heroTitle,
-        data.heroDescription,
-        data.profileName,
-        data.profileBio,
-        data.profileImage,
-      ]
-    });
+      [data.heroTitle, data.heroDescription, data.profileName, data.profileBio, data.profileImage]
+    );
 
     // Fetch and return updated content
-    const result = await db.execute('SELECT * FROM admin_content WHERE id = 1');
-    return result.rows[0] as unknown as AdminContent;
+    return getAdminContent();
   } catch (error) {
     console.error('Failed to update admin content in Turso:', error);
     throw error;

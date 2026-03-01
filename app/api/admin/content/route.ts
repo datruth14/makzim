@@ -1,10 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getAdminContent, updateAdminContent } from '@/app/lib/turso';
+import { getAdminContent, updateAdminContent, initializeTursoDatabase } from '@/app/lib/turso';
 
 export const dynamic = 'force-dynamic';
 
 export async function GET() {
   try {
+    // Initialize database on first request
+    await initializeTursoDatabase();
     const content = await getAdminContent();
     console.log('Fetched admin content from Turso:', content);
     return NextResponse.json(content);
@@ -22,6 +24,8 @@ export async function GET() {
 
 export async function POST(request: NextRequest) {
   try {
+    // Initialize database on first request
+    await initializeTursoDatabase();
     const body = await request.json();
     console.log('Updating admin content in Turso:', body);
     
