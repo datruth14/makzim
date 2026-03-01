@@ -23,6 +23,7 @@ export default function AdminDashboard() {
   const router = useRouter();
   const [content, setContent] = useState<AdminContent | null>(null);
   const [saved, setSaved] = useState(false);
+  const [saving, setSaving] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
@@ -69,6 +70,7 @@ export default function AdminDashboard() {
   const handleSave = async () => {
     if (!content) return;
     try {
+      setSaving(true);
       const response = await fetch('/api/admin/content', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -80,6 +82,8 @@ export default function AdminDashboard() {
     } catch (err) {
       setError('Failed to save changes');
       console.error(err);
+    } finally {
+      setSaving(false);
     }
   };
 
@@ -121,7 +125,7 @@ export default function AdminDashboard() {
       {/* Header */}
       <header className="bg-white shadow-sm py-4 sticky top-0 z-50">
         <div className="container mx-auto px-6 flex justify-between items-center">
-          <h1 className="text-2xl font-bold text-blue-700">Maksim Travels Admin</h1>
+          <h1 className="text-2xl font-bold text-blue-700">Travel Hub Admin</h1>
           <div className="flex items-center gap-4">
             <Link href="/" className="text-blue-600 hover:text-blue-700 font-semibold transition">
               ← Home
@@ -335,9 +339,17 @@ export default function AdminDashboard() {
             {/* Save Button */}
             <button
               onClick={handleSave}
-              className="w-full mt-8 bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 rounded-xl transition duration-300 shadow-lg"
+              disabled={saving}
+              className="w-full mt-8 bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white font-bold py-4 rounded-xl transition duration-300 shadow-lg flex items-center justify-center gap-2"
             >
-              Save Changes
+              {saving ? (
+                <>
+                  <span className="inline-block animate-spin rounded-full h-5 w-5 border-2 border-white border-t-blue-200"></span>
+                  Saving...
+                </>
+              ) : (
+                'Save Changes'
+              )}
             </button>
           </div>
         </div>
