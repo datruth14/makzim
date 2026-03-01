@@ -12,13 +12,25 @@ export async function GET() {
     return NextResponse.json(content);
   } catch (error) {
     console.error('Error fetching admin content:', error);
-    return NextResponse.json(
-      { 
-        error: 'Failed to fetch content',
-        details: error instanceof Error ? error.message : 'Unknown error'
-      },
-      { status: 500 }
-    );
+    // Return 200 with fallback data so home page always works
+    const fallbackContent = {
+      id: 1,
+      headerTitle: 'Maksim Travels',
+      headerPhone: '07069085676',
+      whatsappNumber: '2347069085676',
+      heroTitle: 'I Will Connect You to the World',
+      heroDescription: 'Expert assistance for international tickets, local flights, hotel reservations, and seamless visa processing.',
+      profileName: 'Your Dedicated Travel Partner',
+      profileBio: '"Call us for a swift response. I am committed to making your global travel dreams a reality."',
+      profileImage: '👤',
+      footerTitle: 'Maksim Travels',
+      footerDescription: 'I Will Connect You to the World',
+      footerCopyright: `© ${new Date().getFullYear()} Maksim Travels. All rights reserved.`,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    };
+    console.log('Returning fallback content due to error:', error instanceof Error ? error.message : 'Unknown error');
+    return NextResponse.json(fallbackContent);
   }
 }
 

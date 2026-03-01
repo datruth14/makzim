@@ -23,8 +23,11 @@ export default function Home() {
       if (response.ok) {
         const data = await response.json();
         setAdminContent(data);
+        console.log('Successfully loaded admin content:', data);
       } else {
-        console.error('Failed to fetch admin content:', response.status);
+        console.error('Failed to fetch admin content. Status:', response.status);
+        const errorData = await response.json().catch(() => ({}));
+        console.error('Error details:', errorData);
       }
     } catch (err) {
       console.error('Failed to fetch admin content:', err);
