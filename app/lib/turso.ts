@@ -24,11 +24,11 @@ let client: ReturnType<typeof createClient> | null = null;
 function getClient() {
   if (client) return client;
 
-  const url = process.env.TURSO_CONNECTION_URL;
+  const url = process.env.TURSO_DATABASE_URL;
   const token = process.env.TURSO_AUTH_TOKEN;
 
   if (!url) {
-    throw new Error('TURSO_CONNECTION_URL environment variable is not set');
+    throw new Error('TURSO_DATABASE_URL environment variable is not set');
   }
 
   if (!token) {
@@ -65,17 +65,17 @@ export async function initializeTursoDatabase() {
     const existing = await db.execute('SELECT COUNT(*) as count FROM admin_content');
     
     if (existing.rows.length === 0 || (existing.rows[0] as any).count === 0) {
-      await db.execute(
-        `INSERT INTO admin_content (id, heroTitle, heroDescription, profileName, profileBio, profileImage)
+      await db.execute({
+        sql: `INSERT INTO admin_content (id, heroTitle, heroDescription, profileName, profileBio, profileImage)
          VALUES (1, ?, ?, ?, ?, ?)`,
-        [
+        args: [
           DEFAULT_CONTENT.heroTitle,
           DEFAULT_CONTENT.heroDescription,
           DEFAULT_CONTENT.profileName,
           DEFAULT_CONTENT.profileBio,
           DEFAULT_CONTENT.profileImage,
         ]
-      );
+      });
     }
 
     console.log('Turso database initialized successfully');
@@ -100,7 +100,7 @@ export async function getAdminContent(): Promise<AdminContent> {
       };
     }
 
-    return result.rows[0] as AdminContent;
+    return result.rows[0] as unknown as AdminContent;
   } catch (error) {
     console.error('Failed to get admin content from Turso:', error);
     // Return default content on error
@@ -119,22 +119,22 @@ export async function updateAdminContent(
   try {
     const db = getClient();
 
-    await db.execute(
-      `UPDATE admin_content 
+    await db.execute({
+      sql: `UPDATE admin_content 
        SET heroTitle = ?, heroDescription = ?, profileName = ?, profileBio = ?, profileImage = ?, updatedAt = CURRENT_TIMESTAMP
        WHERE id = 1`,
-      [
+      args: [
         data.heroTitle,
         data.heroDescription,
         data.profileName,
         data.profileBio,
         data.profileImage,
       ]
-    );
+    });
 
     // Fetch and return updated content
     const result = await db.execute('SELECT * FROM admin_content WHERE id = 1');
-    return result.rows[0] as AdminContent;
+    return result.rows[0] as unknown as AdminContent;
   } catch (error) {
     console.error('Failed to update admin content in Turso:', error);
     throw error;

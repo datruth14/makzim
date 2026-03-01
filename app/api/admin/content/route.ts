@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getAdminContent, updateAdminContent } from '@/app/lib/turso';
 
+export const dynamic = 'force-dynamic';
+
 export async function GET() {
   try {
     const content = await getAdminContent();
