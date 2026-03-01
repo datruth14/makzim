@@ -1,4 +1,5 @@
-import axios from 'axios';
+import axios, { AxiosInstance } from 'axios';
+import { getAdminContentFromStorage, saveAdminContentToStorage } from './storage';
 
 export interface AdminContent {
   id: number;
@@ -19,7 +20,7 @@ const DEFAULT_CONTENT: Omit<AdminContent, 'id' | 'createdAt' | 'updatedAt'> = {
   profileImage: '👤',
 };
 
-let cachedInstance: axios.AxiosInstance | null = null;
+let cachedInstance: AxiosInstance | null = null;
 
 function getTursoClient() {
   if (cachedInstance) return cachedInstance;
@@ -100,38 +101,30 @@ export async function initializeTursoDatabase() {
 
 export async function getAdminContent(): Promise<AdminContent> {
   try {
+    // Try to fetch from Turso first
     const result = await executeQuery('SELECT * FROM admin_content WHERE id = 1');
     const rows = result.results[0]?.rows || [];
 
-    if (rows.length === 0) {
+    if (rows.length > 0) {
+      const row = rows[0];
       return {
-        id: 1,
-        ...DEFAULT_CONTENT,
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-      };
+        id: row[0],
+        heroTitle: row[1],
+        heroDescription: row[2],
+        profileName: row[3],
+        profileBio: row[4],
+        profileImage: row[5],
+        createdAt: row[6],
+        updatedAt: row[7],
+      } as unknown as AdminContent;
     }
-
-    const row = rows[0];
-    return {
-      id: row[0],
-      heroTitle: row[1],
-      heroDescription: row[2],
-      profileName: row[3],
-      profileBio: row[4],
-      profileImage: row[5],
-      createdAt: row[6],
-      updatedAt: row[7],
-    } as unknown as AdminContent;
   } catch (error) {
-    console.error('Failed to get admin content from Turso:', error);
-    return {
-      id: 1,
-      ...DEFAULT_CONTENT,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-    };
+    console.log('Turso fetch note:', error instanceof Error ? error.message : 'Unknown error');
   }
+
+  // Fall back to file-based storage
+  console.log('Using file-based storage for admin content');
+  return getAdminContentFromStorage();
 }
 
 export async function updateAdminContent(
@@ -148,18 +141,20 @@ export async function updateAdminContent(
       );
     } catch (updateError: any) {
       console.log('Turso update note:', updateError?.response?.data?.error || updateError?.message);
-      // Continue even if update fails - we'll return the new data
     }
 
-    // Return the updated content with current timestamp
-    return {
+    // Always save to file-based storage for persistence
+    const updatedContent: AdminContent = {
       id: 1,
       ...data,
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
     };
+
+    const savedContent = saveAdminContentToStorage(updatedContent);
+    return savedContent;
   } catch (error) {
-    console.error('Failed to update admin content in Turso:', error);
+    console.error('Failed to update admin content:', error);
     // Still return the data even if save fails
     return {
       id: 1,
