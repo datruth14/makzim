@@ -1,10 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getAdminContent, updateAdminContent } from '@/app/lib/kv-storage';
+import { getAdminContent, updateAdminContent } from '@/app/lib/turso';
 
 export async function GET() {
   try {
     const content = await getAdminContent();
-    console.log('Fetched admin content from KV:', content);
+    console.log('Fetched admin content from Turso:', content);
     return NextResponse.json(content);
   } catch (error) {
     console.error('Error fetching admin content:', error);
@@ -21,7 +21,7 @@ export async function GET() {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    console.log('Updating admin content in KV:', body);
+    console.log('Updating admin content in Turso:', body);
     
     const content = await updateAdminContent({
       heroTitle: body.heroTitle,
