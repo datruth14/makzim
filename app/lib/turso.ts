@@ -34,11 +34,15 @@ const DEFAULT_CONTENT: Omit<AdminContent, 'id' | 'createdAt' | 'updatedAt'> = {
 
 let db: Client | null = null;
 
-function getTursoClient(): Client {
+export function getTursoClient(): Client {
   if (db) return db;
 
   const url = process.env.TURSO_DATABASE_URL;
   const token = process.env.TURSO_AUTH_TOKEN;
+
+  console.log('Initializing Turso client...');
+  console.log('URL exists:', !!url);
+  console.log('Token exists:', !!token);
 
   if (!url) {
     throw new Error('TURSO_DATABASE_URL environment variable is not set');
@@ -53,10 +57,10 @@ function getTursoClient(): Client {
       url,
       authToken: token,
     });
-    console.log('Turso client initialized');
+    console.log('✓ Turso client initialized successfully');
     return db;
   } catch (error) {
-    console.error('Failed to initialize Turso client:', error);
+    console.error('✗ Failed to initialize Turso client:', error);
     throw error;
   }
 }
@@ -105,12 +109,13 @@ export async function initializeTursoDatabase() {
 
 export async function getAdminContent(): Promise<AdminContent> {
   try {
+    console.log('📡 Fetching admin content from Turso...');
     const client = getTursoClient();
     const result = await client.execute('SELECT * FROM admin_content WHERE id = 1');
 
     if (result.rows.length > 0) {
       const row = result.rows[0] as any;
-      console.log('Fetched admin content from Turso');
+      console.log('✓ Successfully fetched admin content from Turso (data persists)');
       return {
         id: row.id || 1,
         headerTitle: row.headerTitle,
@@ -129,11 +134,11 @@ export async function getAdminContent(): Promise<AdminContent> {
       };
     }
   } catch (error) {
-    console.log('Turso fetch note:', error instanceof Error ? error.message : 'Unknown error');
+    console.log('✗ Turso fetch failed:', error instanceof Error ? error.message : 'Unknown error');
   }
 
   // Fall back to file-based storage
-  console.log('Using file-based storage for admin content (Turso unavailable)');
+  console.log('⚠️  Falling back to file-based storage (data will NOT persist on Vercel)');
   return getAdminContentFromStorage();
 }
 
@@ -149,15 +154,16 @@ export async function updateAdminContent(
 
   // Try to update in Turso first (for production on Vercel)
   try {
+    console.log('💾 Attempting to save to Turso...');
     const client = getTursoClient();
     await client.execute(
       `UPDATE admin_content 
        SET headerTitle = '${data.headerTitle}', headerPhone = '${data.headerPhone}', whatsappNumber = '${data.whatsappNumber}', heroTitle = '${data.heroTitle}', heroDescription = '${data.heroDescription}', profileName = '${data.profileName}', profileBio = '${data.profileBio}', profileImage = '${data.profileImage}', footerTitle = '${data.footerTitle}', footerDescription = '${data.footerDescription}', footerCopyright = '${data.footerCopyright}', updatedAt = CURRENT_TIMESTAMP
        WHERE id = 1`
     );
-    console.log('Admin content updated in Turso');
+    console.log('✓ Admin content updated in Turso (persists to database)');
   } catch (tursoError) {
-    console.log('Turso update note:', tursoError instanceof Error ? tursoError.message : 'Unknown error');
+    console.log('✗ Turso update failed:', tursoError instanceof Error ? tursoError.message : 'Unknown error');
   }
 
   // Also save to file storage for local fallback
