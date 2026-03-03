@@ -50,7 +50,8 @@ function getDefaultContent(): AdminContent {
 }
 
 function isProduction(): boolean {
-  return process.env.NODE_ENV === 'production' || process.env.VERCEL === '1';
+  // Only consider it production if running on Vercel
+  return process.env.VERCEL === '1';
 }
 
 export function getAdminContent(): AdminContent {
