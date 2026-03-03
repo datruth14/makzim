@@ -1,11 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getAdminContent, saveAdminContent } from '@/app/lib/github-storage';
+import { getAdminContent, saveAdminContent } from '@/app/lib/vercel-kv-storage';
 
 export const dynamic = 'force-dynamic';
 
 export async function GET() {
   try {
-    const content = getAdminContent();
+    const content = await getAdminContent();
     console.log('✓ Fetched admin content from repository');
     return NextResponse.json(content);
   } catch (error) {
@@ -37,7 +37,7 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     console.log('Updating admin content...');
     
-    const content = saveAdminContent({
+    const content = await saveAdminContent({
       id: 1,
       headerTitle: body.headerTitle,
       headerPhone: body.headerPhone,
