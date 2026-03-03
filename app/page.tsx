@@ -78,9 +78,6 @@ export default function Home() {
             <a href={`tel:${adminContent?.headerPhone || '07069085676'}`} className="text-sm font-semibold text-blue-700 hover:text-blue-800 transition">
               📞 {adminContent?.headerPhone || '07069085676'}
             </a>
-            <a href="/admin" className="text-xs font-semibold text-gray-600 hover:text-blue-700 transition">
-              Admin
-            </a>
           </div>
         </div>
       </header>
