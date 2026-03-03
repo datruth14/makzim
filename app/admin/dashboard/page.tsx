@@ -78,7 +78,11 @@ export default function AdminDashboard() {
       });
       if (!response.ok) throw new Error('Failed to save');
       setSaved(true);
-      setTimeout(() => setSaved(false), 3000);
+      // Refetch content after successful save to show latest data
+      setTimeout(() => {
+        fetchContent();
+        setSaved(false);
+      }, 1000);
     } catch (err) {
       setError('Failed to save changes');
       console.error(err);

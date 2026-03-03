@@ -19,7 +19,7 @@ export default function Home() {
 
   const fetchAdminContent = async () => {
     try {
-      const response = await fetch('/api/admin/content');
+      const response = await fetch(`/api/admin/content?t=${Date.now()}`);
       if (response.ok) {
         const data = await response.json();
         setAdminContent(data);

@@ -1,14 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getAdminContent, updateAdminContent, initializeTursoDatabase } from '@/app/lib/turso';
+import { getAdminContent, saveAdminContent } from '@/app/lib/github-storage';
 
 export const dynamic = 'force-dynamic';
 
 export async function GET() {
   try {
-    // Initialize database on first request
-    await initializeTursoDatabase();
-    const content = await getAdminContent();
-    console.log('Fetched admin content from Turso:', content);
+    const content = getAdminContent();
+    console.log('✓ Fetched admin content from repository');
     return NextResponse.json(content);
   } catch (error) {
     console.error('Error fetching admin content:', error);
@@ -36,12 +34,11 @@ export async function GET() {
 
 export async function POST(request: NextRequest) {
   try {
-    // Initialize database on first request
-    await initializeTursoDatabase();
     const body = await request.json();
-    console.log('Updating admin content in Turso:', body);
+    console.log('Updating admin content...');
     
-    const content = await updateAdminContent({
+    const content = saveAdminContent({
+      id: 1,
       headerTitle: body.headerTitle,
       headerPhone: body.headerPhone,
       whatsappNumber: body.whatsappNumber,
@@ -53,9 +50,11 @@ export async function POST(request: NextRequest) {
       footerTitle: body.footerTitle,
       footerDescription: body.footerDescription,
       footerCopyright: body.footerCopyright,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
     });
     
-    console.log('Updated admin content:', content);
+    console.log('✓ Admin content updated');
     return NextResponse.json(content);
   } catch (error) {
     console.error('Error updating admin content:', error);
